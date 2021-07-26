@@ -11,10 +11,10 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class AppBean implements Serializable {
+public class ApplicationBean implements Serializable {
     private static final long serialVersionUID = 88L;
 
-    private int id;
+    private Long id;
     private String emp;
     private String unAttend;
     private String toAttend;

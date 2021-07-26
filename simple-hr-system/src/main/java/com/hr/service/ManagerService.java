@@ -2,7 +2,7 @@ package com.hr.service;
 
 import com.hr.domain.Employee;
 import com.hr.exception.HrException;
-import com.hr.vo.AppBean;
+import com.hr.vo.ApplicationBean;
 import com.hr.vo.EmployeeBean;
 import com.hr.vo.SalaryBean;
 
@@ -23,7 +23,7 @@ public interface ManagerService {
      * @param mgr 新增的员工名
      * @return 部门上个月工资
      */
-    List<SalaryBean> getSalaryByMgr(String mgr);
+    List<SalaryBean> getSalaryByMgr(String mgr) throws HrException;
 
     /**
      * 根据经理返回该部门的全部员工
@@ -39,7 +39,7 @@ public interface ManagerService {
      * @param mgr 经理名
      * @return 该部门的全部申请
      */
-    List<AppBean> getAppsByMgr(String mgr);
+    List<ApplicationBean> getAppsByMgr(String mgr);
 
     /**
      * 处理申请
@@ -48,5 +48,5 @@ public interface ManagerService {
      * @param mgrName 经理名字
      * @param result  是否通过
      */
-    void check(int appid, String mgrName, boolean result);
+    void check(long appid, String mgrName, boolean result);
 }

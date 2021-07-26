@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,33 +33,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     private ApplicationRepository applicationRepository;
     private AttendRepository attendRepository;
     private AttendTypeRepository attendTypeRepository;
-    //    private CheckBackRepository checkBackRepository;
     private EmployeeRepository employeeRepository;
     private ManagerRepository managerRepository;
     private PaymentRepository paymentRepository;
 
     private SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM");
-//    private SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     public EmployeeServiceImpl(
             ApplicationRepository applicationRepository,
             AttendRepository attendRepository,
             AttendTypeRepository attendTypeRepository,
-//            CheckBackRepository checkBackRepository,
             EmployeeRepository employeeRepository,
             ManagerRepository managerRepository,
             PaymentRepository paymentRepository) {
         this.applicationRepository = applicationRepository;
         this.attendRepository = attendRepository;
         this.attendTypeRepository = attendTypeRepository;
-//        this.checkBackRepository = checkBackRepository;
         this.employeeRepository = employeeRepository;
         this.managerRepository = managerRepository;
         this.paymentRepository = paymentRepository;
     }
 
     @Override
+    @Transactional
     public int validLogin(Employee employee) {
         if (managerRepository.findByNameAndPass(employee.getName(), employee.getPass()).isPresent()) {
             return LOGIN_MGR;
@@ -72,6 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Auto punch cards, insert absence records for employee at 7 am
      */
     @Override
+    @Transactional
     public void autoPunch() {
         log.info("auto log absence");
         List<Employee> employees = employeeRepository.findAll();
@@ -89,6 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Auto pay last month salary on the 1st on month
      */
     @Override
+    @Transactional
     public void autoPay() {
         log.info("auto pay salary");
         List<Employee> employees = employeeRepository.findAll();
@@ -114,6 +114,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return
      */
     @Override
+    @Transactional
     public int validPunch(String user, String dutyDay) {
         var employee = employeeRepository.findByName(user);
         if (employee.isEmpty()) return NO_PUNCH;
@@ -153,6 +154,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return
      */
     @Override
+    @Transactional
     public int punch(String user, String dutyDay, boolean isCome) {
         var employee = employeeRepository.findByName(user);
         if (employee.isEmpty()) return PUNCH_FAIL;
@@ -192,6 +194,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return
      */
     @Override
+    @Transactional
     public List<PaymentBean> empSalary(String empName) {
         var employee = employeeRepository.findByName(empName);
         if (employee.isEmpty()) return new ArrayList<>();
@@ -206,6 +209,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return
      */
     @Override
+    @Transactional
     public List<AttendBean> unAttend(String empName) {
         var type = attendTypeRepository.getById(1L);
         var employee = employeeRepository.findByName(empName);
@@ -221,6 +225,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return List<AttendType>
      */
     @Override
+    @Transactional(readOnly = true)
     public List<AttendType> getAllType() {
         return attendTypeRepository.findAll();
     }
@@ -234,6 +239,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return boolean
      */
     @Override
+    @Transactional
     public boolean addApplication(long attId, long typeId, String reason) {
         log.info("--------------" + attId);
         log.info("~~~~" + typeId);

@@ -8,5 +8,11 @@ import java.util.List;
 
 public interface ApplicationRepository extends JpaRepositoryImplementation<Application, Long> {
 
-    List<Application> findByAttend_Employee(Employee employee);
+    default List<Application> findByEmployee(Employee employee) {
+        return findAll(((root, query, criteriaBuilder) ->
+                query.where(
+                        criteriaBuilder.equal(root.get("attend").get("employee"), employee)
+                ).getRestriction()
+        ));
+    }
 }
